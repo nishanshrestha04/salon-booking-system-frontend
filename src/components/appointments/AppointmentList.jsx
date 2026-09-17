@@ -1,9 +1,27 @@
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
-import { useState } from 'react';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
+import { Search } from 'lucide-react';
+import { useState, useMemo } from 'react';
 
 export default function AppointmentList({ appointments, isLoading, onStatusChange }) {
   const [selectedAppt, setSelectedAppt] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
+
+  const filteredAppointments = useMemo(() => {
+    if (!appointments) return [];
+    return appointments.filter(appt => {
+      const matchesSearch = 
+        appt.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        appt.customer_phone.includes(searchQuery);
+      
+      const matchesDate = dateFilter ? appt.appointment_date === dateFilter : true;
+      
+      return matchesSearch && matchesDate;
+    });
+  }, [appointments, searchQuery, dateFilter]);
   if (isLoading) {
     return <div className="p-8 text-center text-primary font-medium animate-pulse">Loading appointments...</div>;
   }
@@ -20,8 +38,38 @@ export default function AppointmentList({ appointments, isLoading, onStatusChang
 
   return (
     <div className="space-y-4">
-      {appointments.map(appt => (
-        <Card key={appt.id} className="border-l-4 border-l-secondary hover:bg-muted/10 transition-colors">
+      {/* Filters */}
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input 
+            placeholder="Search by name or phone..." 
+            className="pl-9 bg-white"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        <div className="w-full sm:w-auto flex gap-2">
+          <Input 
+            type="date" 
+            className="bg-white"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+          />
+          {dateFilter && (
+            <Button variant="outline" onClick={() => setDateFilter('')}>Clear</Button>
+          )}
+        </div>
+      </div>
+
+      {filteredAppointments.length === 0 ? (
+        <Card className="border-dashed border-2">
+          <CardContent className="p-8 text-center text-muted-foreground font-medium">
+            No appointments match your filters.
+          </CardContent>
+        </Card>
+      ) : filteredAppointments.map(appt => (
+          <Card key={appt.id} className="border-l-4 border-l-secondary hover:bg-muted/10 transition-colors">
           <CardHeader className="pb-2 cursor-pointer" onClick={() => setSelectedAppt(appt)}>
             <div className="flex justify-between items-start">
               <div>

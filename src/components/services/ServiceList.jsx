@@ -1,12 +1,16 @@
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import { Trash2 } from 'lucide-react';
+import { useState } from 'react';
 
 export default function ServiceList({ services, isLoading, onServiceDeleted }) {
+  const [serviceToDelete, setServiceToDelete] = useState(null);
   
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this service?")) {
-      if (onServiceDeleted) await onServiceDeleted(id);
+  const confirmDelete = async () => {
+    if (serviceToDelete && onServiceDeleted) {
+      await onServiceDeleted(serviceToDelete.id);
+      setServiceToDelete(null);
     }
   };
 
@@ -39,15 +43,29 @@ export default function ServiceList({ services, isLoading, onServiceDeleted }) {
             <Button 
               variant="destructive" 
               size="sm" 
-              onClick={() => handleDelete(service.id)}
-              className="h-8"
-            >
-              <Trash2 className="h-4 w-4 mr-1" />
+              onClick={() => setServiceToDelete(service)}
+              className="w-full flex items-center justify-center gap-2 font-bold"
+            >  <Trash2 className="h-4 w-4 mr-1" />
               Delete
             </Button>
           </CardFooter>
         </Card>
       ))}
+      
+      <Dialog open={!!serviceToDelete} onOpenChange={(open) => !open && setServiceToDelete(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-destructive">Delete Service</DialogTitle>
+            <DialogDescription className="mt-2 text-muted-foreground">
+              Are you sure you want to delete the service <strong className="text-foreground">{serviceToDelete?.name}</strong>? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex sm:justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setServiceToDelete(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Yes, Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
