@@ -1,12 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { Search } from 'lucide-react';
+import { Search, Trash2 } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
-export default function AppointmentList({ appointments, isLoading, onStatusChange }) {
+export default function AppointmentList({ appointments, isLoading, onStatusChange, onApptDeleted }) {
   const [selectedAppt, setSelectedAppt] = useState(null);
+  const [apptToDelete, setApptToDelete] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [dateFilter, setDateFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -24,6 +25,14 @@ export default function AppointmentList({ appointments, isLoading, onStatusChang
       return matchesSearch && matchesDate && matchesStatus;
     });
   }, [appointments, searchQuery, dateFilter, statusFilter]);
+
+  const confirmDelete = async () => {
+    if (apptToDelete && onApptDeleted) {
+      await onApptDeleted(apptToDelete.id);
+      setApptToDelete(null);
+    }
+  };
+
   if (isLoading) {
     return <div className="p-8 text-center text-primary font-medium animate-pulse">Loading appointments...</div>;
   }
@@ -123,10 +132,36 @@ export default function AppointmentList({ appointments, isLoading, onStatusChang
                 <option value="completed">Completed</option>
                 <option value="cancelled">Cancelled</option>
               </select>
+              <Button 
+                variant="destructive" 
+                size="icon" 
+                className="h-7 w-7 shrink-0 ml-2" 
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  setApptToDelete(appt); 
+                }}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
           </CardFooter>
         </Card>
       ))}
+
+      <Dialog open={!!apptToDelete} onOpenChange={(open) => !open && setApptToDelete(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-xl text-destructive">Delete Appointment</DialogTitle>
+            <DialogDescription className="mt-2 text-muted-foreground">
+              Are you sure you want to delete the appointment for <strong className="text-foreground">{apptToDelete?.customer_name}</strong>? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex sm:justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={() => setApptToDelete(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={confirmDelete}>Yes, Delete</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={!!selectedAppt} onOpenChange={(open) => !open && setSelectedAppt(null)}>
         <DialogContent className="sm:max-w-[425px]">

@@ -91,6 +91,22 @@ export const updateAppointmentStatus = async (id, status) => {
     return { data, error: null };
   } catch (error) {
     console.error('Error updating appointment:', error);
+    console.error('Error updating appointment:', error);
     return { data: null, error: error.message };
+  }
+};
+
+export const deleteAppointment = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/appointments/${id}/`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return { error: null };
+  } catch (error) {
+    console.error('Error deleting appointment:', error);
+    return { error: error.message };
   }
 };

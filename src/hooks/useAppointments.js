@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchAppointments, createAppointment, updateAppointmentStatus } from '../api';
+import { fetchAppointments, createAppointment, updateAppointmentStatus, deleteAppointment } from '../api';
 
 export function useAppointments() {
   const [appointments, setAppointments] = useState([]);
@@ -38,12 +38,21 @@ export function useAppointments() {
     return res;
   };
 
+  const deleteAppt = async (id) => {
+    const res = await deleteAppointment(id);
+    if (!res.error) {
+      await loadAppointments();
+    }
+    return res;
+  };
+
   return {
     appointments,
     isLoading,
     error,
-    loadAppointments,
     addAppointment,
-    updateStatus
+    updateStatus,
+    deleteAppt,
+    refresh: loadAppointments
   };
 }

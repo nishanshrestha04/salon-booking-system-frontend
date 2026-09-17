@@ -19,6 +19,15 @@ export default function AppointmentForm({ onAppointmentAdded, services, isLoadin
     setIsSubmitting(true);
     setError(null);
     
+    const now = new Date();
+    const selectedDateTime = new Date(`${formData.appointment_date}T${formData.appointment_time}`);
+    
+    if (selectedDateTime < now) {
+      setError("Cannot book an appointment in the past.");
+      setIsSubmitting(false);
+      return;
+    }
+    
     if (onAppointmentAdded) {
       const payload = {
         ...formData,
@@ -41,6 +50,10 @@ export default function AppointmentForm({ onAppointmentAdded, services, isLoadin
     }
     setIsSubmitting(false);
   };
+
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
   return (
     <Card className="border-t-4 border-t-primary">
@@ -98,6 +111,7 @@ export default function AppointmentForm({ onAppointmentAdded, services, isLoadin
               <Input 
                 required 
                 type="date" 
+                min={todayStr}
                 value={formData.appointment_date}
                 onChange={(e) => setFormData({...formData, appointment_date: e.target.value})}
               />
@@ -108,6 +122,7 @@ export default function AppointmentForm({ onAppointmentAdded, services, isLoadin
               <Input 
                 required 
                 type="time" 
+                min={formData.appointment_date === todayStr ? currentTimeStr : undefined}
                 value={formData.appointment_time}
                 onChange={(e) => setFormData({...formData, appointment_time: e.target.value})}
               />

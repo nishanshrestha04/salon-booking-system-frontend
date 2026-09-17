@@ -2,7 +2,7 @@ import { AppointmentList, AppointmentForm } from '../components/appointments';
 import { useAppointments, useServices } from '../hooks';
 
 export default function AppointmentsPage() {
-  const { appointments, isLoading: loadingAppts, addAppointment, updateStatus } = useAppointments();
+  const { appointments, isLoading: loadingAppts, addAppointment, updateStatus, deleteAppt } = useAppointments();
   const { services, isLoading: loadingServices } = useServices();
 
   const isLoading = loadingAppts || loadingServices;
@@ -24,6 +24,7 @@ export default function AppointmentsPage() {
           appointments={appointments} 
           isLoading={isLoading} 
           onStatusChange={updateStatus} 
+          onApptDeleted={deleteAppt}
         />
       </div>
     </div>

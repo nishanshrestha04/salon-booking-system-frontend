@@ -34,6 +34,8 @@ export function useServices() {
     const res = await deleteService(id);
     if (!res.error) {
       await loadServices();
+    } else {
+      alert(res.error);
     }
     return res;
   };
