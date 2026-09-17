@@ -1,37 +1,12 @@
-import { useEffect, useState } from 'react';
-import { fetchServices, fetchAppointments } from '../api';
+import { useServices, useAppointments } from '../hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { CalendarDays, Scissors, Clock, Banknote } from 'lucide-react';
 
 export default function Dashboard() {
-  const [services, setServices] = useState([]);
-  const [appointments, setAppointments] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { services, isLoading: loadingServices } = useServices();
+  const { appointments, isLoading: loadingAppointments } = useAppointments();
 
-  useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true);
-      const [servicesRes, appointmentsRes] = await Promise.all([
-        fetchServices(),
-        fetchAppointments()
-      ]);
-
-      if (servicesRes.data && Array.isArray(servicesRes.data)) {
-        setServices(servicesRes.data);
-      } else if (servicesRes.data && servicesRes.data.results) {
-        setServices(servicesRes.data.results);
-      }
-
-      if (appointmentsRes.data && Array.isArray(appointmentsRes.data)) {
-        setAppointments(appointmentsRes.data);
-      } else if (appointmentsRes.data && appointmentsRes.data.results) {
-        setAppointments(appointmentsRes.data.results);
-      }
-      setIsLoading(false);
-    };
-
-    loadData();
-  }, []);
+  const isLoading = loadingServices || loadingAppointments;
 
   // Stats
   const totalServices = services.length;

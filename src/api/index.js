@@ -14,6 +14,41 @@ export const fetchServices = async () => {
   }
 };
 
+export const createService = async (serviceData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/services/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(serviceData),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    console.error('Error creating service:', error);
+    return { data: null, error: error.message };
+  }
+};
+
+export const deleteService = async (id) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/services/${id}/`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return { error: null };
+  } catch (error) {
+    console.error('Error deleting service:', error);
+    return { error: error.message };
+  }
+};
+
 export const fetchAppointments = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/appointments/`);
