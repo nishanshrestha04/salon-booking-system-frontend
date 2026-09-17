@@ -13,3 +13,17 @@ export const fetchServices = async () => {
     return { data: null, error: error.message };
   }
 };
+
+export const fetchAppointments = async () => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/appointments/`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    console.error('Error fetching appointments:', error);
+    return { data: null, error: error.message };
+  }
+};
