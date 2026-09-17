@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchAppointments } from '../api';
+import { fetchAppointments, createAppointment, updateAppointmentStatus } from '../api';
 
 export function useAppointments() {
   const [appointments, setAppointments] = useState([]);
@@ -22,10 +22,28 @@ export function useAppointments() {
     loadAppointments();
   }, [loadAppointments]);
 
+  const addAppointment = async (apptData) => {
+    const res = await createAppointment(apptData);
+    if (!res.error) {
+      await loadAppointments();
+    }
+    return res;
+  };
+
+  const updateStatus = async (id, status) => {
+    const res = await updateAppointmentStatus(id, status);
+    if (!res.error) {
+      await loadAppointments();
+    }
+    return res;
+  };
+
   return {
     appointments,
     isLoading,
     error,
-    loadAppointments
+    loadAppointments,
+    addAppointment,
+    updateStatus
   };
 }

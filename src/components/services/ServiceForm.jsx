@@ -53,11 +53,14 @@ export default function ServiceForm({ onServiceAdded }) {
               <label className="text-sm font-bold text-foreground">Price (NPR)</label>
               <Input 
                 required 
-                type="number" 
-                min="1"
+                type="text" 
+                inputMode="numeric"
                 placeholder="500" 
                 value={formData.price}
-                onChange={(e) => setFormData({...formData, price: e.target.value})}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '');
+                  setFormData({...formData, price: val});
+                }}
               />
             </div>
             
@@ -65,11 +68,14 @@ export default function ServiceForm({ onServiceAdded }) {
               <label className="text-sm font-bold text-foreground">Duration (mins)</label>
               <Input 
                 required 
-                type="number" 
-                min="1"
+                type="text" 
+                inputMode="numeric"
                 placeholder="30" 
                 value={formData.duration}
-                onChange={(e) => setFormData({...formData, duration: e.target.value})}
+                onChange={(e) => {
+                  const val = e.target.value.replace(/\D/g, '');
+                  setFormData({...formData, duration: val});
+                }}
               />
             </div>
           </div>

@@ -62,3 +62,35 @@ export const fetchAppointments = async () => {
     return { data: null, error: error.message };
   }
 };
+
+export const createAppointment = async (apptData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/appointments/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(apptData),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || `HTTP error! status: ${response.status}`);
+    return { data, error: null };
+  } catch (error) {
+    console.error('Error creating appointment:', error);
+    return { data: null, error: error.message };
+  }
+};
+
+export const updateAppointmentStatus = async (id, status) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/appointments/${id}/`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || `HTTP error! status: ${response.status}`);
+    return { data, error: null };
+  } catch (error) {
+    console.error('Error updating appointment:', error);
+    return { data: null, error: error.message };
+  }
+};
