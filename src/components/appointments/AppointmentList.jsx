@@ -9,6 +9,7 @@ export default function AppointmentList({ appointments, isLoading, onStatusChang
   const [selectedAppt, setSelectedAppt] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [dateFilter, setDateFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   const filteredAppointments = useMemo(() => {
     if (!appointments) return [];
@@ -18,10 +19,11 @@ export default function AppointmentList({ appointments, isLoading, onStatusChang
         appt.customer_phone.includes(searchQuery);
       
       const matchesDate = dateFilter ? appt.appointment_date === dateFilter : true;
+      const matchesStatus = statusFilter === 'all' ? true : appt.status === statusFilter;
       
-      return matchesSearch && matchesDate;
+      return matchesSearch && matchesDate && matchesStatus;
     });
-  }, [appointments, searchQuery, dateFilter]);
+  }, [appointments, searchQuery, dateFilter, statusFilter]);
   if (isLoading) {
     return <div className="p-8 text-center text-primary font-medium animate-pulse">Loading appointments...</div>;
   }
@@ -44,21 +46,36 @@ export default function AppointmentList({ appointments, isLoading, onStatusChang
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input 
             placeholder="Search by name or phone..." 
-            className="pl-9 bg-white"
+            className="h-10 pl-9 bg-white"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="w-full sm:w-auto flex gap-2">
-          <Input 
-            type="date" 
-            className="bg-white"
-            value={dateFilter}
-            onChange={(e) => setDateFilter(e.target.value)}
-          />
-          {dateFilter && (
-            <Button variant="outline" onClick={() => setDateFilter('')}>Clear</Button>
-          )}
+        
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto items-center">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="h-10 w-full sm:w-36 rounded-none border border-input bg-white px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          
+          <div className="flex gap-2 w-full sm:w-auto items-center">
+            <Input 
+              type="date" 
+              className="bg-white h-10 w-full sm:w-40"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+            />
+            {(dateFilter || statusFilter !== 'all') && (
+              <Button variant="outline" onClick={() => { setDateFilter(''); setStatusFilter('all'); }}>Clear</Button>
+            )}
+          </div>
         </div>
       </div>
 
