@@ -1,16 +1,22 @@
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../ui/card';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Edit2 } from 'lucide-react';
 import { useState } from 'react';
 
-export default function ServiceList({ services, isLoading, onServiceDeleted }) {
+export default function ServiceList({ services, isLoading, onServiceDeleted, onEditService }) {
   const [serviceToDelete, setServiceToDelete] = useState(null);
+  const [deleteError, setDeleteError] = useState(null);
   
   const confirmDelete = async () => {
+    setDeleteError(null);
     if (serviceToDelete && onServiceDeleted) {
-      await onServiceDeleted(serviceToDelete.id);
-      setServiceToDelete(null);
+      const res = await onServiceDeleted(serviceToDelete.id);
+      if (res && res.error) {
+        setDeleteError(res.error);
+      } else {
+        setServiceToDelete(null);
+      }
     }
   };
 
@@ -39,13 +45,23 @@ export default function ServiceList({ services, isLoading, onServiceDeleted }) {
             <p className="text-primary font-bold text-xl">NPR {service.price}</p>
             <p className="text-sm text-muted-foreground font-medium mt-1">Duration: {service.duration} mins</p>
           </CardContent>
-          <CardFooter className="pt-2 flex justify-end border-t mt-auto bg-muted/20 p-2">
+          <CardFooter className="pt-2 flex justify-end gap-2 border-t mt-auto bg-muted/20 p-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => onEditService && onEditService(service)}
+              className="flex-1 flex items-center justify-center gap-2 font-bold"
+            >  
+              <Edit2 className="h-4 w-4 mr-1" />
+              Edit
+            </Button>
             <Button 
               variant="destructive" 
               size="sm" 
               onClick={() => setServiceToDelete(service)}
-              className="w-full flex items-center justify-center gap-2 font-bold"
-            >  <Trash2 className="h-4 w-4 mr-1" />
+              className="flex-1 flex items-center justify-center gap-2 font-bold"
+            >  
+              <Trash2 className="h-4 w-4 mr-1" />
               Delete
             </Button>
           </CardFooter>
@@ -60,8 +76,13 @@ export default function ServiceList({ services, isLoading, onServiceDeleted }) {
               Are you sure you want to delete the service <strong className="text-foreground">{serviceToDelete?.name}</strong>? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
+          {deleteError && (
+            <div className="bg-red-50 text-destructive text-sm font-medium p-3 rounded-md border border-red-200 mt-2">
+              {deleteError}
+            </div>
+          )}
           <DialogFooter className="flex sm:justify-end gap-2 mt-4">
-            <Button variant="outline" onClick={() => setServiceToDelete(null)}>Cancel</Button>
+            <Button variant="outline" onClick={() => { setServiceToDelete(null); setDeleteError(null); }}>Cancel</Button>
             <Button variant="destructive" onClick={confirmDelete}>Yes, Delete</Button>
           </DialogFooter>
         </DialogContent>

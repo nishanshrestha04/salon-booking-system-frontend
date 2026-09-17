@@ -40,12 +40,33 @@ export const deleteService = async (id) => {
       method: 'DELETE',
     });
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json().catch(() => null);
+      throw new Error(data?.error || `HTTP error! status: ${response.status}`);
     }
     return { error: null };
   } catch (error) {
     console.error('Error deleting service:', error);
     return { error: error.message };
+  }
+};
+
+export const updateService = async (id, serviceData) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/services/${id}/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(serviceData),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const data = await response.json();
+    return { data, error: null };
+  } catch (error) {
+    console.error('Error updating service:', error);
+    return { data: null, error: error.message };
   }
 };
 

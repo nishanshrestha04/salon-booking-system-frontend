@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { fetchServices, createService, deleteService } from '../api';
+import { fetchServices, createService, deleteService, updateService } from '../api';
 
 export function useServices() {
   const [services, setServices] = useState([]);
@@ -30,12 +30,18 @@ export function useServices() {
     return res;
   };
 
+  const editService = async (id, serviceData) => {
+    const res = await updateService(id, serviceData);
+    if (!res.error) {
+      await loadServices();
+    }
+    return res;
+  };
+
   const removeService = async (id) => {
     const res = await deleteService(id);
     if (!res.error) {
       await loadServices();
-    } else {
-      alert(res.error);
     }
     return res;
   };
@@ -46,6 +52,7 @@ export function useServices() {
     error,
     loadServices,
     addService,
+    editService,
     removeService
   };
 }
