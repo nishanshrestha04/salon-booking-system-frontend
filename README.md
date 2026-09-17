@@ -1,16 +1,34 @@
-# React + Vite
+# Salon Management System - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend for the Salon Management System, built with React, Vite, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Features
+- **Dashboard**: View and manage salon services and appointments.
+- **Services Management**: View available services dynamically fetched from the backend.
+- **Appointment Booking**: Real-time integration with the backend to book appointments and track statuses.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Setup Instructions
 
-## React Compiler
+1. **Install Node modules**:
+   ```bash
+   npm install
+   ```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+2. **Configure Environment Variables**:
+   Create a `.env` file in the root of the frontend directory and add the backend API URL:
+   ```env
+   VITE_API_URL=http://localhost:8000/api
+   ```
+   (This is already created during the initial setup).
 
-## Expanding the ESLint configuration
+3. **Run the Development Server**:
+   ```bash
+   npm run dev
+   ```
+   The application will be available at `http://localhost:5173/`.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Technologies Used
+- React 18
+- Vite
+- Tailwind CSS
+- Native Fetch API
