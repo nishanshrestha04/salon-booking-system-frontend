@@ -22,12 +22,14 @@ export default function Dashboard() {
     }, 0);
 
   // Today's Appointments
-  const todayStr = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  
   const todaysAppointments = appointments.filter(a => a.appointment_date === todayStr);
 
-  // Upcoming Appointments (Future dates or today's future times)
+  // Upcoming Appointments (Strictly future dates)
   const upcomingAppointments = appointments
-    .filter(a => a.appointment_date >= todayStr)
+    .filter(a => a.appointment_date > todayStr)
     .sort((a, b) => new Date(`${a.appointment_date}T${a.appointment_time}`) - new Date(`${b.appointment_date}T${b.appointment_time}`))
     .slice(0, 5); // Just show next 5
 
