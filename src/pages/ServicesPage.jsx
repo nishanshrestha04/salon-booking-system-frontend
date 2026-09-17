@@ -11,7 +11,7 @@ export default function ServicesPage() {
         <p className="text-muted-foreground font-medium">Add and manage available salon services.</p>
       </div>
       
-      <div className="grid gap-8 md:grid-cols-[1fr_2fr] items-start">
+      <div className="grid gap-8 lg:grid-cols-[1fr_2fr] items-start">
         <ServiceForm onServiceAdded={addService} />
         <ServiceList 
           services={services} 

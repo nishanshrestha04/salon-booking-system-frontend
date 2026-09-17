@@ -105,14 +105,14 @@ export default function Dashboard() {
             ) : (
               <div className="space-y-4">
                 {todaysAppointments.map(appt => (
-                  <div key={appt.id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0 hover:bg-muted/50 p-2 rounded-lg transition-colors -mx-2">
+                  <div key={appt.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b pb-4 last:border-0 last:pb-0 hover:bg-muted/50 p-2 rounded-lg transition-colors -mx-2 gap-2 sm:gap-0">
                     <div>
                       <p className="text-sm font-bold text-foreground leading-none">{appt.customer_name}</p>
                       <p className="text-sm text-primary font-medium mt-1">{appt.service_name}</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-left sm:text-right w-full sm:w-auto flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-end">
                       <p className="text-sm font-bold text-foreground">{appt.appointment_time}</p>
-                      <div className={`mt-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                      <div className={`mt-0 sm:mt-2 inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold ${
                         appt.status === 'confirmed' ? 'bg-green-100 text-green-800' :
                         appt.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                         appt.status === 'completed' ? 'bg-blue-100 text-blue-800' :
@@ -139,12 +139,12 @@ export default function Dashboard() {
             ) : (
               <div className="space-y-4">
                 {upcomingAppointments.map(appt => (
-                  <div key={appt.id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0 hover:bg-muted/50 p-2 rounded-lg transition-colors -mx-2">
+                  <div key={appt.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b pb-4 last:border-0 last:pb-0 hover:bg-muted/50 p-2 rounded-lg transition-colors -mx-2 gap-2 sm:gap-0">
                     <div>
                       <p className="text-sm font-bold text-foreground leading-none">{appt.customer_name}</p>
                       <p className="text-sm text-cta font-medium mt-1">{appt.service_name}</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-left sm:text-right w-full sm:w-auto flex flex-row sm:flex-col justify-between sm:justify-start items-center sm:items-end">
                       <p className="text-sm font-bold text-foreground">{appt.appointment_date}</p>
                       <p className="text-sm text-muted-foreground font-medium">{appt.appointment_time}</p>
                     </div>

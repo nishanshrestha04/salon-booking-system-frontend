@@ -14,7 +14,7 @@ export default function AppointmentsPage() {
         <p className="text-muted-foreground font-medium">Book new appointments and manage their status.</p>
       </div>
       
-      <div className="grid gap-8 md:grid-cols-[1fr_2fr] items-start">
+      <div className="grid gap-8 lg:grid-cols-[1fr_2fr] items-start">
         <AppointmentForm 
           onAppointmentAdded={addAppointment} 
           services={services} 
